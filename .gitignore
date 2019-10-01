@@ -2,4 +2,6 @@ venv
 venv/
 .idea
 .idea/
+other
+other/
 log.txt
