@@ -9,7 +9,7 @@ class Vaga:
     def permanencia(self):
         if self.chegada == 0:
             return -1
-        return time.time()-self.chegada
+        return round(time.time()-self.chegada, 2)
     def insere_carro(self,carro):
         self.carro=carro
         self.chegada=time.time()
@@ -37,20 +37,26 @@ class Estacionamento:
             if self.vagas[i].carro==None:
                 return i
         return -1
-    def info_estacionamento(self):
-        print("Detalhes dos carros estacionados")
+    def info_estacionamento(self, mostrar_livre=False):
+        print("Detalhes do estacionamento: ")
         for i in self.vagas:
             if self.vagas[i].carro != None:
-                print("O carro " + self.vagas[i].carro.cor + " com a placa " + self.vagas[i].carro.placa +
-                      " está estacionado na vaga " + str(i) + " há " + "%.2f segundos" % self.vagas[i].permanencia())
+                print("\tO carro " + self.vagas[i].carro.cor + " com a placa " + self.vagas[i].carro.placa +
+                      " está estacionado na vaga " + str(i) + " há " + str(self.vagas[i].permanencia()) + " segundos.")
             else:
-                print("Vaga " + str(i) + " livre.")
+                if mostrar_livre:
+                    print("\tVaga " + str(i) + " livre.")
+        if len(self.espera) != 0:
+            print("Carros em espera: ")
+            for i in range(len(self.espera)):
+                print("\tCarro " + self.espera[i].cor + " com a placa " + self.espera[i].placa)
 
 if __name__ == "__main__":
     e1 = Estacionamento(10)
     c1 = Carro("aaaa", "branco")
     c2 = Carro("abbbb", "verde")
     e1.estacionar(c1)
+    time.sleep(2)
     e1.estacionar(c2)
     e1.info_estacionamento()
 
