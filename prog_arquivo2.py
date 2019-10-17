@@ -6,7 +6,7 @@ lista = []
 def guarda_letra(string):
     L = []
     for i in range(len(string)):
-        if string[i] == "a" or string[i] == "e" or string[i] == "i" or string[i] == "o" or string[i] == "u":
+        if string[i].lower() in "aeiou":
             if i >=3:
                 L.append([string[i - 1], string[i - 2], string[i - 3]])
             elif i >= 2:
