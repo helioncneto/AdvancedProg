@@ -1,0 +1,6 @@
+Usuario=issabel,midiacom
+Senha=1ss4b3l,m1d14c0m!desktop
+Host=177.11.1.70,127.0.0.1
+Porta=22,22
+Comando=ls -l /etc,ls -la
+Saida=temp
