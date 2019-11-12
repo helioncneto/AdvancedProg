@@ -40,10 +40,19 @@ nx.set_node_attributes(G, atributos)
 nx.draw(G, with_labels=True, font_weight='bold')
 
 for i in range(1, len(G.nodes)+1):
-    ssh = SSH(G.nodes[i]['IP'], 'labcd', 'labcd', 22)
-    for j in range(1, len(G.nodes)+1):
-        ssh_lat = ssh.exec_cmd(['ping -c 1 ' + G.nodes[j]['IP']])
-        ssh_lat = float(ssh_lat.split('time=')[1].split('ms')[0])
-        G.add_weighted_edges_from([(i, j, ssh_lat)])
+    #usuario_ssh = raw_input("Digite o nome do usuario de " + G.nodes[i]['IP']+": ")
+    #senha_ssh = raw_input("Digite a senha de " +usuario_ssh+ " em " + G.nodes[i]['IP'] + ": ")
+    try:
+        usuario_ssh = raw_input("Digite o nome do usuario de " + G.nodes[i]['IP'] + ": ")
+        senha_ssh = raw_input("Digite a senha de " + usuario_ssh + " em " + G.nodes[i]['IP'] + ": ")
+        ssh = SSH(G.nodes[i]['IP'], usuario_ssh, senha_ssh, 22)
+        for j in range(1, len(G.nodes) + 1):
+            ssh_lat = ssh.exec_cmd(['ping -c 1 ' + G.nodes[j]['IP']])
+            ssh_lat = float(ssh_lat.split('time=')[1].split('ms')[0])
+            G.add_weighted_edges_from([(i, j, ssh_lat)])
+    except:
+        print("Usuario e senha incorretor ou host nao responde SSH")
+        pass
 
-#plt.show()
+
+plt.show()
