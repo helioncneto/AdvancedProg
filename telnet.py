@@ -2,8 +2,8 @@ import telnetlib
 from time import sleep
 
 # Definindo Usuário e Senha
-usuario = 'helio'
-senha = 'mgsolid8'
+usuario = 'teste'
+senha = 'teste'
 Host = 'localhost'
 
 class Telnet:
