@@ -3,34 +3,56 @@ import matplotlib.pyplot as plt
 from python_arptable import get_arp_table
 import netifaces as ni
 import os
+import paramiko
+
+class SSH:
+    def __init__(self, hostname, username, password, port):
+        self.ssh = paramiko.SSHClient()
+        self.ssh = paramiko.SSHClient()
+        self.ssh.load_system_host_keys()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.ssh.connect(hostname=hostname, username=username, password=password, port=port)
+
+    def exec_cmd(self, cmd):
+        stdin, stdout, stderr = self.ssh.exec_command(cmd)
+        if stderr.channel.recv_exit_status() != 0:
+            return stderr
+        else:
+            return stdout
 
 
-class No_Grafo:
-    def __init__(self, ip=1,hw=2):
-        self.ip=ip
-        self.hw=hw
-
-    def __str__(self):
-        return "IP="+str(self.ip)+" HW="+str(self.hw)
-
-    def __repr__(self):
-        return str(self.ip)
-ip = ni.ifaddresses('enp5s0')
-atrasos = []
+#iface = input("Digite sua interface de rede: ")
+#ip = ni.ifaddresses(iface)
+ip = ni.ifaddresses('wlp3s0')
 arp = get_arp_table()
 G = nx.Graph()
-no = No_Grafo(ip[2][0]['addr'], ip[17][0]['addr'])
-G.add_node(no)
+atributos = {0: {'IP': ip[2][0]['addr'], 'MAC': ip[17][0]['addr']}}
+G.add_node(0)
 
-for i in range(len(arp)):
-    no = No_Grafo(arp[i]['IP address'], arp[i]['HW address'])
-    G.add_node(no)
-    lat = os.popen('ping -c 1 ' + arp[i]['IP address']).read()
+for i in range(1, len(arp) + 1):
+    atributos[i] = {'IP': arp[i-1]['IP address'], 'MAC': arp[i-1]['HW address']}
+    G.add_node(i)
+    lat = os.popen('ping -c 1 ' + arp[i-1]['IP address']).read()
     lat = float(lat.split('time=')[1].split('ms')[0])
-    G.add_weighted_edges_from([(ip[2][0]['addr'], arp[i]['IP address'], lat)])
-    atrasos.append(lat)
+    G.add_weighted_edges_from([(0, i, lat)])
 
-print(atrasos)
-
+nx.set_node_attributes(G, atributos)
 nx.draw(G, with_labels=True, font_weight='bold')
+
+for i in range(1, len(G.nodes)+1):
+    #usuario_ssh = raw_input("Digite o nome do usuario de " + G.nodes[i]['IP']+": ")
+    #senha_ssh = raw_input("Digite a senha de " +usuario_ssh+ " em " + G.nodes[i]['IP'] + ": ")
+    try:
+        usuario_ssh = raw_input("Digite o nome do usuario de " + G.nodes[i]['IP'] + ": ")
+        senha_ssh = raw_input("Digite a senha de " + usuario_ssh + " em " + G.nodes[i]['IP'] + ": ")
+        ssh = SSH(G.nodes[i]['IP'], usuario_ssh, senha_ssh, 22)
+        for j in range(1, len(G.nodes) + 1):
+            ssh_lat = ssh.exec_cmd(['ping -c 1 ' + G.nodes[j]['IP']])
+            ssh_lat = float(ssh_lat.split('time=')[1].split('ms')[0])
+            G.add_weighted_edges_from([(i, j, ssh_lat)])
+    except:
+        print("Usuario e senha incorretor ou host nao responde SSH")
+        pass
+
+
 plt.show()
