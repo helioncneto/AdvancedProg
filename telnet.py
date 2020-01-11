@@ -1,5 +1,3 @@
-
-# Importando os Modulos e parametros
 import telnetlib
 from time import sleep
 
