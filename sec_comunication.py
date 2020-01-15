@@ -1,7 +1,10 @@
 import socket, ssl
 
-context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-#context = ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
+#context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+context = ssl.SSLContext(protocol=ssl.PROTOCOL_TLSv1_2)
+context.set_ecdh_curve('prime256v1')
+#context.set_ciphers('TLS-ECDHE-RSA-WITH-AES-256-GCM-SHA384')
+context.set_ciphers('ECDHE-RSA-AES256-GCM-SHA384')
 context.load_cert_chain(certfile="server.pem")
 
 bindsocket = socket.socket()
