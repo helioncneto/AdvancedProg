@@ -16,7 +16,7 @@ def adoption(iface, ip_sw, ip_novo, mask, gw):
     udp.connect(dest)
     udp.send(msg.encode())
     udp.close()
-    payload = open('adopt.json', 'r')
+    payload = open('adoption.json', 'r')
     payload = json.load(payload)
 
     r = requests.post('https://' + ip_novo + ':443/api/default/security/Commission', json=payload, verify=False)
