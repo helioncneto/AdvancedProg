@@ -23,4 +23,4 @@ def adoption(iface, ip_sw, ip_novo, mask, gw):
     print(r.text)
 
 
-adoption('enp5s0', '169.254.61.63', '172.16.10.100', 24, '172.16.10.1')
+adoption('enp5s0', '169.254.70.149', '172.16.10.100', 24, '172.16.10.1')
